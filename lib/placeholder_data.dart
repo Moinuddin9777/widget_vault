@@ -1,5 +1,7 @@
 // import 'package:widget_vault/brand_model.dart';
 
+import 'package:image_picker/image_picker.dart';
+
 class Brand {
   const Brand({
     required this.id,
@@ -62,3 +64,22 @@ List<Brand> brandsData = const <Brand>[
   Brand(id: "id8", title: "Axis", imageUrl: "imageUrl"),
   Brand(id: "id9", title: "Moonlight", imageUrl: "imageUrl"),
 ];
+
+List<String> ourState = ["Virat", "Rohith", "Gill", "Hardik", "Siraj"];
+
+List<XFile> pickedImages = [];
+
+
+// class NewBrand {
+//   const NewBrand({
+//     required this.id,
+//     required this.title,
+//     required this.imageUrl,
+//   });
+
+//   final String id;
+//   final String title;
+//   final String imageUrl;
+// }
+
+
