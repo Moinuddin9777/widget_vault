@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:widget_vault/UI/views/products_screen.dart';
+import 'package:widget_vault/UI/widgets/brand_button.dart';
 // import 'package:widget_vault/UI/widgets/brand_button.dart';
 import 'package:widget_vault/UI/widgets/brand_card.dart';
 // import 'package:widget_vault/brand_model.dart';
@@ -17,27 +19,28 @@ class HomeScreen extends StatefulWidget {
 /// MediaQuery
 /// plugin
 ///
+///
+/// SLIVERS , INSETS
+/// SafeArea
+///
 
 class _HomeScreenState extends State<HomeScreen> {
+  // print(MediaQuery.of(context).size.width);
   List<Brand> brandList = brandsData;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(
-      child: Padding(
+      body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: LayoutBuilder(builder: (context, constraints) {
           if (constraints.maxWidth > 400) {
-            // print("*************************************");
-            // print(MediaQuery.of(context).size.width);
-            // print("*************************************");
             return const TabGrid();
           } else {
             return const MobileGrid();
           }
         }),
       ),
-    ));
+    );
   }
 }
 
@@ -83,33 +86,58 @@ class MobileGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Brand> brandList = brandsData;
-    return Column(
-      children: [
-        Column(
-          children: [
-            Card(
+    // List<Brand> brandList = brandsData;
+    // final brandListChildren = <SliverList>[
+    //   SliverList(
+    //     delegate: SliverChildBuilderDelegate(
+    //       childCount: brandsData.length,
+    //       (context, index) =>
+    //           BrandButton(
+    //               brandName: brandsData[index].title,
+    //               imageUrl: brandsData[index].imageUrl),
+    //     ),
+    //   )
+    // ];
+    return CustomScrollView(
+      slivers: [
+        SliverAppBar(title: Text('SaiLakshmis First App')),
+        SliverToBoxAdapter(
+          child: SizedBox(
+            width: 200,
+            height: 100,
+            child: Card(
+              elevation: 7,
               color: Colors.amber,
-              child: Container(
-                width: 200,
-                height: 100,
+              child: Column(
+                children: [
+                  Text('Latest Products Available'),
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => ProductsPage(
+                                  pageName: "Products",
+                                )));
+                      },
+                      child: Text('Explore'))
+                ],
               ),
             ),
-            Text(
-                "This is some text that goes along with the, This is some text that goes along with the , This is some text that goes along with the  ")
-          ],
+          ),
         ),
-        Expanded(
-          child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2),
-              itemCount: brandList.length,
-              itemBuilder: (context, index) {
-                return BrandCard(
-                    // brandName: brandList[index].title,
-                    assetLink: brandList[index].imageUrl);
-              }),
-        ),
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            childCount: brandsData.length,
+            (context, index) =>
+                // Container(
+                //           color: Colors.blueGrey,
+                //           width: 30,
+                //           height: 30,
+                //         )
+                BrandButton(
+                    brandName: brandsData[index].title,
+                    imageUrl: brandsData[index].imageUrl),
+          ),
+        )
       ],
     );
   }

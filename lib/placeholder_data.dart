@@ -12,6 +12,45 @@ class Brand {
   final String imageUrl;
 }
 
+class Category {
+  Category({
+    required this.catId,
+    required this.brandsList,
+    required this.name,
+  });
+
+  final List<Brand> brandsList;
+  final int catId;
+  final String name;
+}
+
+List<Category> categoriesData = <Category>[
+  Category(
+      catId: 1,
+      brandsList: const [
+        Brand(id: "id1", title: "Maybelline", imageUrl: "imageUrl"),
+        Brand(id: "id3", title: "Lakme", imageUrl: "imageUrl"),
+        Brand(id: "id8", title: "Colorpop", imageUrl: "imageUrl"),
+      ],
+      name: "Makeup"),
+  Category(
+      catId: 2,
+      brandsList: const [
+        Brand(id: "id2", title: "H&M", imageUrl: "imageUrl"),
+        Brand(id: "id7", title: "Levis", imageUrl: "imageUrl"),
+        Brand(id: "id6", title: "GoodCloth", imageUrl: "imageUrl"),
+      ],
+      name: "Clothing"),
+  Category(
+      catId: 3,
+      brandsList: const [
+        Brand(id: "id1", title: "RedTape", imageUrl: "imageUrl"),
+        Brand(id: "id8", title: "Sneakers", imageUrl: "imageUrl"),
+        Brand(id: "id8", title: "Bata", imageUrl: "imageUrl"),
+      ],
+      name: "Shoes"),
+];
+
 List<Brand> brandsData = const <Brand>[
   Brand(id: "id1", title: "Maybelline", imageUrl: "imageUrl"),
   Brand(id: "id2", title: "Loreal", imageUrl: "imageUrl"),
