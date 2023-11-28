@@ -1,8 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:widget_vault/UI/views/brand_details_page.dart';
-import 'package:widget_vault/core/app_images.dart';
+// import 'package:image_picker/image_picker.dart';
+import 'package:widget_vault/controllers/form_controller.dart';
+// import 'package:flutter_svg/svg.dart';
+// import 'package:widget_vault/UI/views/brand_details_page.dart';
+// import 'package:widget_vault/core/app_images.dart';
 import 'package:widget_vault/placeholder_data.dart';
+import 'package:get/get.dart';
 
 class ProductsPage extends StatefulWidget {
   const ProductsPage({required this.pageName, super.key});
@@ -14,6 +19,7 @@ class ProductsPage extends StatefulWidget {
 }
 
 class _ProductsPageState extends State<ProductsPage> {
+  // XFile imageArgument = Get.arguments['pickedImage'];
   List<Category> listOfCategories = categoriesData;
   @override
   Widget build(BuildContext context) {
@@ -22,20 +28,30 @@ class _ProductsPageState extends State<ProductsPage> {
         backgroundColor: Colors.lightBlueAccent,
         title: Text(widget.pageName),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: CustomScrollView(
-          slivers: [
-            SliverList.builder(
-                itemCount: listOfCategories.length,
-                itemBuilder: (context, index) {
-                  return CategoryTile(
-                      brandName: listOfCategories[index].name,
-                      listOfBrands: listOfCategories[index].brandsList,
-                      categoryId: listOfCategories[index].catId);
-                })
-          ],
-        ),
+      body: GetBuilder<FormController>(
+        builder: (formInstance) {
+          return Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: CustomScrollView(
+              slivers: [
+                SliverList.builder(
+                    itemCount: 1,
+                    itemBuilder: (context, index) {
+                      return SizedBox(
+                        width: 100,
+                        height: 100,
+                        child: Image.file(
+                            File(formInstance.imagesList[index].path)),
+                      );
+                      // CategoryTile(
+                      //     brandName: listOfCategories[index].name,
+                      //     listOfBrands: listOfCategories[index].brandsList,
+                      //     categoryId: listOfCategories[index].catId);
+                    })
+              ],
+            ),
+          );
+        },
       ),
       // body: Column(
       //   mainAxisAlignment: MainAxisAlignment.center,
