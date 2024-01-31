@@ -9,7 +9,7 @@ enum PostsLoadingState { loading, loaded, cantLoad }
 
 class HomeController extends GetxController {
   PostsLoadingState postsLoadingState = PostsLoadingState.loading;
-  List<String> namesList = ourState;
+  // List<String> namesList = ourState;
   List<Post> postsData = <Post>[];
 
   addNameToList(String name) {
@@ -17,11 +17,17 @@ class HomeController extends GetxController {
     update();
   }
 
+  // our function was triggered here
   Future<PostsResponse> fetchPosts() async {
+    // loading starts
     postsLoadingState = PostsLoadingState.loading;
     update();
+    // we have to trigger the API now
+    // here we are hitting it
     final PostsResponse response = await PracticeServices.fetchPostsData();
+    // see if our case was executed or failed
     if (response.posts != null) {
+      // we add data
       postsData.addAll(response.posts!);
       update();
     }
