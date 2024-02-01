@@ -7,7 +7,7 @@ import 'package:widget_vault/controller/location_controller.dart';
 import 'package:widget_vault/controller/image_controller.dart';
 
 class FirstPage extends StatelessWidget {
-  final ImageController imageController = Get.find(); // Use Get.find() to get the controller
+  final ImageController imageController = Get.find();
   final LocationController locationController = Get.find(); // Use Get.find() to get the controller
   final TextEditingController nameController = TextEditingController();
 
