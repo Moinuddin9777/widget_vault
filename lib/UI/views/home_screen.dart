@@ -1,316 +1,118 @@
-// import 'dart:convert';
-// import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-// import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
-import 'package:widget_vault/UI/views/products_screen.dart';
-import 'package:widget_vault/UI/widgets/brand_button.dart';
-import 'package:widget_vault/UI/widgets/image_selector.dart';
-import 'package:widget_vault/controllers/form_controller.dart';
-// import 'package:widget_vault/UI/widgets/brand_button.dart';
-// import 'package:widget_vault/UI/widgets/brand_card.dart';
-import 'package:widget_vault/controllers/home_controller.dart';
-// import 'package:widget_vault/brand_model.dart';
-import 'package:widget_vault/placeholder_data.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+import 'package:widget_vault/controller/location_controller.dart';
+import 'package:widget_vault/controller/image_controller.dart';
 
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  static HomeController get homeController => Get.find();
-  @override
-  void initState() {
-    homeController.fetchPosts();
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: () async {
-          homeController.fetchPosts();
-        },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: GetBuilder<HomeController>(
-            init: HomeController(),
-            builder: (homeInstance) {
-              return ListView.builder(
-                  itemCount: homeInstance.postsData.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      leading:
-                          Text(homeInstance.postsData[index].id.toString()),
-                      title:
-                          Text(homeInstance.postsData[index].title ?? "Null"),
-                      subtitle:
-                          Text(homeInstance.postsData[index].body ?? "No data"),
-                    );
-                  });
-            },
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class TabGrid extends StatelessWidget {
-  const TabGrid({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    TextEditingController nameController = TextEditingController();
-    return Column(
-      children: [
-        GetBuilder<HomeController>(
-          builder: (homeInstance) {
-            return Row(
-              children: [
-                TextFormField(
-                  controller: nameController,
-                  onSaved: (newValue) {
-                    homeInstance.addNameToList(newValue ?? "nullName");
-                  },
-                ),
-                Text(
-                  nameController.text,
-                  style: const TextStyle(fontSize: 24),
-                ),
-                // Text(
-                //     "This is some text that goes along with the, This is some text that goes along with the , This is some text that goes along with the  ")
-              ],
-            );
-          },
-        ),
-        // Expanded(
-        //   child: GridView.builder(
-        //       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        //           crossAxisCount: 6),
-        //       itemCount: brandList.length,
-        //       itemBuilder: (context, index) {
-        //         return BrandCard(
-        //             // brandName: brandList[index].title,
-        //             assetLink: brandList[index].imageUrl);
-        //       }),
-        // ),
-      ],
-    );
-  }
-}
-
-class MobileGrid extends StatelessWidget {
-  const MobileGrid({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: [
-        const SliverAppBar(title: Text('SaiLakshmis First App')),
-        SliverToBoxAdapter(
-          child: SizedBox(
-            width: 200,
-            height: 100,
-            child: Card(
-              elevation: 7,
-              color: Colors.amber,
-              child: Column(
-                children: [
-                  const Text('Latest Products Available'),
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const ProductsPage(
-                                  pageName: "Products",
-                                )));
-                      },
-                      child: const Text('Explore'))
-                ],
-              ),
-            ),
-          ),
-        ),
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            childCount: brandsData.length,
-            (context, index) =>
-                // Container(
-                //           color: Colors.blueGrey,
-                //           width: 30,
-                //           height: 30,
-                //         )
-                BrandButton(
-                    brandName: brandsData[index].title,
-                    imageUrl: brandsData[index].imageUrl),
-          ),
-        )
-      ],
-    );
-  }
-}
-
-class HomeBinding extends Bindings {
-  @override
-  void dependencies() {
-    Get.put<HomeController>(HomeController());
-  }
-}
-
-class FormsBinding extends Bindings {
-  @override
-  void dependencies() {
-    Get.put<FormController>(FormController());
-  }
-}
-
-// class MyFormValidation {
-//   static nameValidation(String? value) {
-//     if (value == null || value.isEmpty) {
-//       return "This field cannot be empty";
-//     }
-//   }
-// }
-
-class FormWithValidation extends StatefulWidget {
-  const FormWithValidation({Key? key}) : super(key: key);
-
-  @override
-  _FormWithValidationState createState() => _FormWithValidationState();
-}
-
-class _FormWithValidationState extends State<FormWithValidation> {
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  TextEditingController nameController = TextEditingController();
-  String selectedGender = 'Male';
-  List<String> selectedHobbies = <String>[];
-  DateTime selectedDate = DateTime.now();
-  // XFile? _image;
+class FirstPage extends StatelessWidget {
+  final ImageController imageController = Get.find(); // Use Get.find() to get the controller
+  final LocationController locationController = Get.find(); // Use Get.find() to get the controller
+  final TextEditingController nameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Form with Validation'),
+        title: Text('Capture Information'),
+        backgroundColor: Colors.blue,
       ),
-      body: Form(
-        key: formKey,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              TextFormField(
-                controller: nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Name',
+      body: Container(
+        color: Colors.white,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextField(
+                  controller: nameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Enter your name',
+                    border: OutlineInputBorder(),
+                  ),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your name';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16.0),
-              DropdownButtonFormField<String>(
-                value: selectedGender,
-                items: const [
-                  DropdownMenuItem(child: Text('Male'), value: 'Male'),
-                  DropdownMenuItem(child: Text('Female'), value: 'Female'),
-                  DropdownMenuItem(child: Text('Other'), value: 'Other'),
-                ],
-                onChanged: (value) {
-                  setState(() {
-                    selectedGender = value!;
-                  });
-                },
-                decoration: const InputDecoration(
-                  labelText: 'Gender',
+                const SizedBox(height: 20),
+                Obx(() => Container( // Use Obx for reactive updates
+                      height: 150,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black),
+                      ),
+                      child: (imageController.selectedImagePath.isNotEmpty)
+                          ? Image.file(
+                              File(imageController.selectedImagePath),
+                              height: 150,
+                              fit: BoxFit.cover,
+                            )
+                          : const Center(
+                              child: Text('No Image Selected'),
+                            ),
+                    )),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () =>
+                          imageController.pickImage(ImageSource.gallery),
+                      child: Text('Gallery'),
+                      style: ElevatedButton.styleFrom(primary: Colors.blue),
+                    ),
+                    ElevatedButton(
+                      onPressed: () =>
+                          imageController.pickImage(ImageSource.camera),
+                      child: Text('Camera'),
+                      style: ElevatedButton.styleFrom(primary: Colors.blue),
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 16.0),
-              Row(
-                children: [
-                  Row(
-                    children: [
-                      Checkbox(
-                        value: selectedHobbies.contains('Reading'),
-                        onChanged: (value) {
-                          setState(() {
-                            if (value!) {
-                              selectedHobbies.add('Reading');
-                            } else {
-                              selectedHobbies.remove('Reading');
-                            }
-                          });
-                        },
+                const SizedBox(height: 20),
+                Obx(() => Container( // Use Obx for reactive updates
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black),
                       ),
-                      const Text('Reading'),
-                    ],
-                  ),
-                  const SizedBox(width: 16.0),
-                  Row(
-                    children: [
-                      Checkbox(
-                        value: selectedHobbies.contains('Sports'),
-                        onChanged: (value) {
-                          setState(() {
-                            if (value!) {
-                              selectedHobbies.add('Sports');
-                            } else {
-                              selectedHobbies.remove('Sports');
-                            }
-                          });
-                        },
+                      child: Text(
+                        locationController.location,
+                        style: const TextStyle(fontSize: 16),
                       ),
-                      const Text('Sports'),
-                    ],
-                  ),
-                  const SizedBox(width: 16.0),
-                  Row(
-                    children: [
-                      Checkbox(
-                        value: selectedHobbies.contains('Music'),
-                        onChanged: (value) {
-                          setState(() {
-                            if (value!) {
-                              selectedHobbies.add('Music');
-                            } else {
-                              selectedHobbies.remove('Music');
-                            }
-                          });
-                        },
-                      ),
-                      const Text('Music'),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16.0),
-              ImageSelectorField(
-                  question: "Take A selfie",
-                  isRequired: true,
-                  onSaved: (val) {
-                    print(val);
-                  }),
-              ElevatedButton(
-                onPressed: () {
-                  if (formKey.currentState!.validate()) {
-                    print('Form submitted successfully!');
-                  }
-                },
-                child: const Text('Submit'),
-              ),
-            ],
+                    )),
+                ElevatedButton(
+                  onPressed: () async {
+                    await locationController.getCurrentLocation();
+                  },
+                  child: Text('Get Location'),
+                  style: ElevatedButton.styleFrom(primary: Colors.green),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    if (nameController.text.isNotEmpty &&
+                        imageController.selectedImagePath.isNotEmpty &&
+                        locationController.location.isNotEmpty) {
+                      Get.toNamed('/second', arguments: {
+                        'name': nameController.text,
+                        'imagePath': imageController.selectedImagePath,
+                        'location': locationController.location,
+                      });
+                    } else {
+                      // Display error popup if any field is empty
+                      Get.defaultDialog(
+                        title: "Error",
+                        middleText: "All fields must be filled!",
+                      );
+                    }
+                  },
+                  child: Text('Go to Second Page'),
+                  style: ElevatedButton.styleFrom(primary: Colors.orange),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 }
+
