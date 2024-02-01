@@ -3,10 +3,10 @@ import 'package:form/app/modules/home/controller/home_controller.dart';
 import 'package:form/app/modules/home/widgets/image_input.dart';
 import 'package:form/app/modules/home/widgets/location_input.dart';
 import 'package:form/app/modules/home/widgets/title_input.dart';
-import 'package:form/app/modules/profile/view.dart';
+import 'package:form/app/modules/place/view.dart';
 import 'package:get/get.dart';
 
-import '../../data/models/user.dart';
+import '../../data/models/place.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -85,7 +85,7 @@ class HomeScreen extends StatelessWidget {
                           if (ctrl.validate()) {
                             Get.to(
                               () => const ProfileScreen(),
-                              arguments: User(
+                              arguments: Place(
                                 name: ctrl.textController.text,
                                 image: ctrl.image,
                                 location: ctrl.location,
