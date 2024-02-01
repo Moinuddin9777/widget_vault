@@ -1,38 +1,38 @@
 import 'package:get/get.dart';
-import 'package:widget_vault/models/responses/posts_response.dart';
-import 'package:widget_vault/placeholder_data.dart';
-import 'package:widget_vault/services/practice_services.dart';
+import 'package:geolocator/geolocator.dart';
 
-// Controllers are meant to serve business logic
+class LocationController extends GetxController {
+  RxString location = ''.obs;
 
-enum PostsLoadingState { loading, loaded, cantLoad }
-
-class HomeController extends GetxController {
-  PostsLoadingState postsLoadingState = PostsLoadingState.loading;
-  // List<String> namesList = ourState;
-  List<Post> postsData = <Post>[];
-
-  addNameToList(String name) {
-    ourState.add(name);
-    update();
+  void log(String message) {
+    print(message);
   }
 
-  // our function was triggered here
-  Future<PostsResponse> fetchPosts() async {
-    // loading starts
-    postsLoadingState = PostsLoadingState.loading;
-    update();
-    // we have to trigger the API now
-    // here we are hitting it
-    final PostsResponse response = await PracticeServices.fetchPostsData();
-    // see if our case was executed or failed
-    if (response.posts != null) {
-      // we add data
-      postsData.addAll(response.posts!);
-      update();
+  Future<void> getCurrentLocation() async {
+    try {
+      LocationPermission permission = await Geolocator.checkPermission();
+
+      log('Location permission status: $permission');
+
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+
+      if (permission == LocationPermission.denied) {
+        throw Exception('Location permission denied');
+      }
+
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      location.value =
+          'Latitude: ${position.latitude}, Longitude: ${position.longitude}';
+      log('Location: ${location.value}');
+    } catch (e) {
+      location.value = 'Error getting location';
+      log('Error getting location: $e');
     }
-    postsLoadingState = PostsLoadingState.loaded;
-    update();
-    return response;
   }
 }
+
