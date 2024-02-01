@@ -1,12 +1,17 @@
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:widget_vault/placeholder_data.dart';
 
-class FormController extends GetxController {
-  List<XFile> imagesList = pickedImages;
+class ImageController extends GetxController {
+  RxString selectedImagePath = ''.obs;
 
-  addImageToList(XFile image) {
-    pickedImages.add(image);
-    update();
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> pickImage(ImageSource source) async {
+    final pickedFile = await _picker.pickImage(source: source);
+
+    if (pickedFile != null) {
+      selectedImagePath.value = pickedFile.path;
+    }
   }
 }
+
