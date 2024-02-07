@@ -1,105 +1,54 @@
 import 'package:flutter/material.dart';
-import 'package:form/app/modules/home/controller/home_controller.dart';
-import 'package:form/app/modules/home/widgets/image_input.dart';
-import 'package:form/app/modules/home/widgets/location_input.dart';
-import 'package:form/app/modules/home/widgets/title_input.dart';
-import 'package:form/app/modules/place/view.dart';
 import 'package:get/get.dart';
-
-import '../../data/models/place.dart';
+import 'package:maps_app/app/modules/home/controller/home_controller.dart';
+import 'package:maps_app/app/modules/map/view.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final ctrl = Get.find<HomeController>();
-
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: SafeArea(
-        child: Container(
-          width: double.infinity,
-          height: double.infinity,
-          decoration: const BoxDecoration(
-            color: Colors.red,
-            image: DecorationImage(
-              image: AssetImage('assets/images/design.png'),
-              alignment: Alignment.bottomRight,
-              opacity: 0.08,
+      body: GetBuilder(
+        init: Get.find<HomeController>(),
+        builder: (ctrl) => Center(
+          child: SizedBox(
+            width: context.width - 40,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextField(
+                  controller: ctrl.textEditingController,
+                  decoration: const InputDecoration(
+                    labelText: 'Enter Address',
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    if (ctrl.textEditingController.text.trim().isEmpty) {
+                      ctrl.getLocation();
+                    } else {
+                      ctrl.getLocationFromAddress();
+                    }
+                  },
+                  child: const Text('Get Location'),
+                ),
+                ctrl.lat != null ? Text('${ctrl.lat}') : const Text(''),
+                ctrl.long != null ? Text('${ctrl.long}') : const Text(''),
+                IconButton(
+                  onPressed: () {
+                    ctrl.copyTextToClipboard();
+                  },
+                  icon: const Icon(Icons.copy),
+                ),
+                IconButton(
+                  onPressed: () {
+                    Get.to(() => const MapScreen());
+                  },
+                  icon: const Icon(Icons.location_on_outlined),
+                ),
+              ],
             ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Column(
-                children: [
-                  Container(
-                    width: 150,
-                    height: 150,
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage('assets/images/home_image2.png'),
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                  ),
-                  const Text(
-                    'Fill Place details',
-                    style: TextStyle(
-                      fontSize: 25,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Container(
-                width: context.width - 40,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(16)),
-                  boxShadow: [
-                    BoxShadow(
-                      offset: Offset(0, 0),
-                      blurRadius: 10,
-                      blurStyle: BlurStyle.outer,
-                    ),
-                  ],
-                ),
-                child: Container(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                      const TitleInput(),
-                      const SizedBox(height: 10),
-                      const ImageInput(),
-                      const SizedBox(height: 10),
-                      const LocationInput(),
-                      const SizedBox(height: 10),
-                      ElevatedButton(
-                        onPressed: () {
-                          if (ctrl.validate()) {
-                            Get.to(
-                              () => const ProfileScreen(),
-                              arguments: Place(
-                                name: ctrl.textController.text,
-                                image: ctrl.image,
-                                location: ctrl.location,
-                              ),
-                            );
-                          }
-                        },
-                        child: const Text('Submit'),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
           ),
         ),
       ),

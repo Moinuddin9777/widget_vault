@@ -1,113 +1,62 @@
-import 'dart:io';
-
+import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 
 class HomeController extends GetxController {
-  final textController = TextEditingController();
-  final formKey = GlobalKey<FormState>();
-  File? image;
-  Position? location;
-  bool isLoading = false;
-
-  captureImage() async {
-    final imagePicker = ImagePicker();
-    final pickedImage = await imagePicker.pickImage(
-      source: ImageSource.camera,
-      maxWidth: 300,
-    );
-    if (pickedImage != null) {
-      image = File(pickedImage.path);
+  final textEditingController = TextEditingController();
+  Position? loaction;
+  String? lat;
+  String? long;
+  String? value;
+  void getLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      debugPrint('Service is not disabled');
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        debugPrint('Permission is denied');
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      debugPrint('Permission denied forever');
+    }
+    loaction = await Geolocator.getCurrentPosition();
+    if (loaction != null) {
+      debugPrint(
+        'latitude : ${loaction!.latitude} longitude : ${loaction!.longitude}',
+      );
+      value = '${loaction!.latitude} ${loaction!.longitude}';
+      lat = loaction!.latitude.toString();
+      long = loaction!.longitude.toString();
       update();
     }
   }
 
-  getLocation() async {
-    isLoading = true;
-    update();
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      Get.snackbar(
-        'Location service is not enabled!',
-        'Please enable location service',
-      );
+  void getLocationFromAddress() async {
+    List<Location> locations =
+        await locationFromAddress(textEditingController.text);
+    if (locations.isNotEmpty) {
+      debugPrint(
+          'Latitude: ${locations.first.latitude}, Longitude: ${locations.first.longitude}');
+      lat = locations.first.latitude.toString();
+      long = locations.first.longitude.toString();
+      value = '$lat $long';
+      update();
     } else {
-      debugPrint('service is available');
+      debugPrint('No location found for the address.');
     }
-
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        Get.snackbar('Location permission denied!',
-            'Please provide the location permission');
-      }
-    } else {
-      debugPrint('permission is available');
-    }
-
-    try {
-      location = await Geolocator.getCurrentPosition();
-    } catch (e) {
-      debugPrint(e.toString());
-    }
-    isLoading = false;
-    update();
-    debugPrint(location.toString());
   }
 
-  bool validate() {
-    if (formKey.currentState!.validate()) {
-      if (image != null) {
-        if (location != null) {
-          return true;
-        } else {
-          Get.snackbar(
-            'Location is empty',
-            'Fetch Location',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.white,
-            titleText: const Text(
-              'Location is empty',
-              style: TextStyle(
-                color: Colors.red,
-                fontSize: 16,
-              ),
-            ),
-          );
-        }
-      } else {
-        location != null
-            ? Get.snackbar(
-                '',
-                'Capture Image',
-                snackPosition: SnackPosition.BOTTOM,
-                backgroundColor: Colors.white,
-                titleText: const Text(
-                  'Image is empty',
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontSize: 16,
-                  ),
-                ),
-              )
-            : Get.snackbar(
-                '',
-                'Fetch Location and capture Image',
-                snackPosition: SnackPosition.BOTTOM,
-                backgroundColor: Colors.white,
-                titleText: const Text(
-                  'Location and image are empty',
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontSize: 16,
-                  ),
-                ),
-              );
-      }
+  Future<void> copyTextToClipboard() async {
+    if (value != null) {
+      FlutterClipboard.copy(value!);
     }
-    return false;
   }
 }
