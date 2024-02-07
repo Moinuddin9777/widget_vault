@@ -1,48 +1,35 @@
+import 'package:assignment_2/routes/routes.dart';
+import 'package:assignment_2/screens/display_screen.dart';
+import 'package:assignment_2/screens/home_screen.dart';
+import 'package:assignment_2/screens/maps.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:widget_vault/UI/views/home_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
-// While using GetX as state management
-// Step 1: Add package
-// Step 2: change the MaterialApp method
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
+  MyApp({super.key});
+  final getPages = [
+    GetPage(name: Routes.screen1, page: () => const HomeScreen()),
+    GetPage(name: Routes.screen2, page: () => DisplayScreen()),
+    GetPage(
+        name: Routes.screen3,
+        page: () => const FindLocation(
+              currentlocation: null,
+            ))
+  ];
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'Flutter Demo',
+      title: 'Assignment _2',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      initialBinding: HomeBinding(),
-      home: const HomeScreen(),
-      // home: FormWithValidation(),
+      initialRoute: Routes.screen1,
+      getPages: getPages,
     );
   }
 }
-
-// While using Riverpod as state management
-
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-
-//   // This widget is the root of your application.
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'Flutter Demo',
-//       theme: ThemeData(
-//         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-//         useMaterial3: true,
-//       ),
-//       home: const HomeScreen(),
-//     );
-//   }
-// }
