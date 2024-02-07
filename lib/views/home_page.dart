@@ -1,73 +1,48 @@
-import 'dart:io';
-import 'package:location/location.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:widget_vault/models/passing_data.dart';
-import 'package:widget_vault/views/display_page.dart';
-import 'package:widget_vault/views/image_input_widget.dart';
-import 'package:widget_vault/views/location_input_widget.dart';
+import 'package:widget_vault/views/location_selection_page.dart';
+import 'package:widget_vault/views/coords_paste_screen.dart';
 
 class HomePage extends StatelessWidget {
-  HomePage({super.key});
-  final TextEditingController _textController = TextEditingController();
-  File? _selectedImage;
-  double latitude = double.infinity, longitude = double.infinity;
-  void sendInfo() {
-    if (_selectedImage == null ||
-        _textController.text == "" ||
-        latitude == double.infinity ||
-        longitude == double.infinity) return;
-    Get.to(
-      () => const DisplayPage(),
-      arguments: {
-        "name": _textController.text,
-        "image": _selectedImage!,
-        "latitude": latitude,
-        "longitude": longitude,
-      },
-    );
-  }
-
+  const HomePage({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Home Page',
+          'Satya Maps',
         ),
       ),
       body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'Enter you name:',
-                  ),
-                  controller: _textController,
-                  scrollPadding: const EdgeInsets.all(20),
-                ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            ElevatedButton.icon(
+              label: const Text('Choose Location'),
+              onPressed: () {
+                Get.to(() => const LocationSelection());
+              },
+              icon: const Icon(
+                Icons.location_on_outlined,
               ),
-              ImageInput(
-                onPickImage: (image) {
-                  _selectedImage = image;
-                },
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            ElevatedButton.icon(
+              label: const Text('Location on Map'),
+              onPressed: () {
+                Get.to(() => const CoordsPaste());
+              },
+              icon: const Icon(
+                Icons.map_sharp,
               ),
-              LocationInput(
-                onPickLocation: (long, lat) {
-                  latitude = lat;
-                  longitude = long;
-                },
-              ),
-              ElevatedButton(
-                onPressed: sendInfo,
-                child: const Text('Submit'),
-              ),
-            ],
-          ),
+            ),
+            const SizedBox(
+              height: 25,
+            ),
+          ],
         ),
       ),
     );

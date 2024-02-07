@@ -4,7 +4,7 @@ import 'package:widget_vault/views/home_page.dart';
 
 void main() {
   runApp(
-    GetMaterialApp(
+    const GetMaterialApp(
       home: HomePage(),
     ),
   );
