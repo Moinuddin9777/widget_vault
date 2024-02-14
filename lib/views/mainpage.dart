@@ -32,7 +32,7 @@ class MainPage extends StatelessWidget {
                   builder: (val) => Column(
                     children: [
                       Text(
-                        '${val.count}',
+                        '${controller.count}',
                         style: Theme.of(context).textTheme.headlineMedium,
                       ),
                       const SizedBox(height: 10),
@@ -41,7 +41,8 @@ class MainPage extends StatelessWidget {
                       const GeoLocator(),
                       ElevatedButton(
                           onPressed: () {
-                            if (controller.currentPosition != null) {
+                            if (controller.currentPosition != null &&
+                                controller.pickedimagefile != null) {
                               Get.toNamed('/secondpage', arguments: {
                                 'image': controller.pickedimagefile,
                                 'location': controller.currentPosition,
