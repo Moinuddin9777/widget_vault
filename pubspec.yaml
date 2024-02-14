@@ -41,6 +41,7 @@ dependencies:
   intl:
   image_picker: 
   dio: 5.3.4
+  geolocator: ^10.1.1
 
 dev_dependencies:
   flutter_test:
