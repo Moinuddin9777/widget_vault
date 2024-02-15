@@ -4,12 +4,18 @@ import 'package:widget_vault/controller/controller.dart';
 import 'package:widget_vault/views/camera.dart';
 import 'package:widget_vault/views/location.dart';
 
-class MainPage extends StatelessWidget {
+class MainPage extends StatefulWidget {
   const MainPage({super.key});
+  @override
+  State<MainPage> createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     //final Controller controller = Get.put(Controller());
     final controller = Get.put<Controller>(Controller());
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
@@ -39,10 +45,10 @@ class MainPage extends StatelessWidget {
                       const ImageCamera(),
                       const SizedBox(height: 8),
                       const GeoLocator(),
+                      const SizedBox(height: 16),
                       ElevatedButton(
                           onPressed: () {
-                            if (controller.currentPosition != null &&
-                                controller.pickedimagefile != null) {
+                            if (controller.pickedimagefile != null) {
                               Get.toNamed('/secondpage', arguments: {
                                 'image': controller.pickedimagefile,
                                 'location': controller.currentPosition,

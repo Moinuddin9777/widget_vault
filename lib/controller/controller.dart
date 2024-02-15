@@ -1,7 +1,10 @@
 import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:share/share.dart';
 
 class Controller extends GetxController {
   var count = 0;
@@ -15,6 +18,9 @@ class Controller extends GetxController {
   String? imagePath;
   Position? currentPosition;
   String alert = '';
+  final text1 = TextEditingController();
+  final text2 = TextEditingController();
+  String copyLocation = '';
 
   var loading = true;
   void _pickimage() async {
@@ -37,7 +43,14 @@ class Controller extends GetxController {
     }
   }
 
-  Future<Object> location() async {
+  @override
+  void dispose() {
+    text1.dispose();
+    text2.dispose();
+    super.dispose();
+  }
+
+  Future location() async {
     bool serviceEnabled;
     LocationPermission permission;
     try {
@@ -60,18 +73,38 @@ class Controller extends GetxController {
       }
       if (permission == LocationPermission.deniedForever) {
         loading = false;
+        update();
       }
       return {
         currentPosition = await Geolocator.getCurrentPosition(),
+        text1.text = currentPosition!.latitude.toString(),
+        text2.text = currentPosition!.longitude.toString(),
         loading = true,
+        print(currentPosition),
         update(),
       };
     } catch (e) {
-      return {
-        update(),
-        alert = '$e',
-      };
+      update();
+      alert = '$e';
     }
+  }
+
+//Text editing control
+  void copy() {
+    if (currentPosition != null) {
+      copyLocation =
+          (currentPosition!.latitude, currentPosition!.longitude).toString();
+      Clipboard.setData(ClipboardData(text: copyLocation));
+      Get.snackbar('Copied', 'Successfully copied the Location');
+    } else {
+      copyLocation = text1.text.toString() + text2.text.toString();
+      Clipboard.setData(ClipboardData(text: copyLocation));
+      Get.snackbar('Copied', 'Successfully copied the Location');
+    }
+  }
+
+  void share() {
+    Share.share(copyLocation);
   }
 
   void Function() get pickimage => _pickimage;
