@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 
 class Controller extends GetxController {
   var count = 0;
@@ -77,8 +77,6 @@ class Controller extends GetxController {
       }
       return {
         currentPosition = await Geolocator.getCurrentPosition(),
-        text1.text = currentPosition!.latitude.toString(),
-        text2.text = currentPosition!.longitude.toString(),
         loading = true,
         print(currentPosition),
         update(),
@@ -103,7 +101,7 @@ class Controller extends GetxController {
     }
   }
 
-  void share() {
+  void share1() {
     Share.share(copyLocation);
   }
 

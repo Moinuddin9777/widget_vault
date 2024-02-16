@@ -19,54 +19,32 @@ class _GeoLocatorState extends State<GeoLocator> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Flexible(
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: controller.text1,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d*')),
-                    ],
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: "Enter the latitude or try to add location",
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 4),
-                Expanded(
-                  child: TextField(
-                    controller: controller.text2,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d*')),
-                    ],
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: "Enter the longitude or try to add location",
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 4),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    controller.copy();
-                  },
-                  icon: const Icon(Icons.copy),
-                  label: const Text(""),
-                ),
-                const SizedBox(width: 4),
-                ElevatedButton.icon(
-                    onPressed: () {
-                      controller.share;
-                    },
-                    icon: const Icon(Icons.share_location),
-                    label: const Text("Share")),
-              ],
+          TextField(
+            controller: controller.text1,
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d*')),
+            ],
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: "Enter the latitude: 23.777777",
             ),
           ),
+
+          const SizedBox(height: 8),
+
+          TextField(
+            controller: controller.text2,
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d*')),
+            ],
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: "Enter the longitude : 41.88",
+            ),
+          ),
+          const SizedBox(height: 8),
           const Text(
             "Please provide the permissions to provide the accurate location",
             textAlign: TextAlign.center,
@@ -77,8 +55,48 @@ class _GeoLocatorState extends State<GeoLocator> {
                 await controller.location();
               },
               icon: const Icon(Icons.location_on),
-              label: const Text("Add Location")),
-          const SizedBox(height: 4),
+              label: const Text("Add Current Location")),
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton.icon(
+                onPressed: () {
+                  controller.copy();
+                },
+                icon: const Icon(Icons.copy),
+                label: const Text("Copy"),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              const SizedBox(width: 8),
+              ElevatedButton.icon(
+                  onPressed: () {
+                    if (controller.currentPosition == null) {
+                      Get.snackbar("Error",
+                          "Please enter the valid location in double type and current location");
+                    } else {
+                      Get.toNamed('/thirdpage', arguments: {
+                        "latitude": double.parse(controller.text1.text),
+                        "longitude": double.parse(controller.text2.text),
+                        "position": controller.currentPosition,
+                      });
+                    }
+                  },
+                  icon: const Icon(Icons.map_outlined),
+                  label: const Text("Open Map")),
+              const SizedBox(width: 8),
+              ElevatedButton.icon(
+                  onPressed: () {
+                    controller.share1;
+                  },
+                  icon: const Icon(Icons.share_rounded),
+                  label: const Text("Share")),
+            ],
+          ),
+
+          const SizedBox(height: 8),
           //Getbuilder
           GetBuilder<Controller>(
             builder: (controller) {
@@ -90,7 +108,8 @@ class _GeoLocatorState extends State<GeoLocator> {
                 );
               }
               if (controller.currentPosition == null) {
-                return const Text("Please add the location");
+                return const Text("Please add the location",
+                    style: TextStyle(color: Colors.red));
               } else {
                 return Text('${controller.currentPosition}');
               }

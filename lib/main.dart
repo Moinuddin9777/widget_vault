@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:widget_vault/views/google-map/googlemap.dart';
 import 'package:widget_vault/views/mainpage.dart';
 import 'package:widget_vault/views/secondpage.dart';
 
@@ -21,7 +22,8 @@ class MyApp extends StatelessWidget {
       initialRoute: '/firstpage',
       getPages: [
         GetPage(name: '/firstpage', page: () => const MainPage()),
-        GetPage(name: '/secondpage', page: () => const SecondPage())
+        GetPage(name: '/secondpage', page: () => const SecondPage()),
+        GetPage(name: '/thirdpage', page: () => const GoogleMaps()),
       ],
     );
   }
